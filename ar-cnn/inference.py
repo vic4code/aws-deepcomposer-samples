@@ -328,7 +328,7 @@ class Inference:
         notes_added_count : int
             updated number of new notes added
         """
-
+        # Prediction
         output_tensor = self.model.predict([input_tensor])
 
         # Apply temperature and softmax

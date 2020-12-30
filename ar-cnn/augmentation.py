@@ -51,6 +51,7 @@ class AddAndRemoveAPercentageOfNotes():
         rows_add_notes, columns_add_notes = self.create_notes_mask(
             piano_roll, sampling_percentage_add, notes_exists=False)
         result = copy.deepcopy(piano_roll)
+        # 0 means remove; 1 means add.
         result[rows_remove_notes, columns_remove_notes] = 0
         result[rows_add_notes, columns_add_notes] = 1
         return result

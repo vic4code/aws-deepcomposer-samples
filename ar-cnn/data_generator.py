@@ -52,10 +52,13 @@ class PianoRollGenerator(keras.utils.Sequence):
         # Create the training and target lists
         training_input = []
         training_target = []
+        # Batch size = 32
         while len(training_input) <= self.batch_size:
             target_pianoroll = self.sample_list[self.sample_index]
+            # Create iterative index, start from 0
             self.sample_index = (self.sample_index + 1) % len(self.sample_list)
             try:
+                # (128,128,1)
                 training_data_shape = (self.bars * self.beats_per_bar *
                                        self.beat_resolution,
                                        self.number_of_pitches,
@@ -70,17 +73,22 @@ class PianoRollGenerator(keras.utils.Sequence):
                     sampling_lower_bound_add=self.sampling_lower_bound_add,
                     sampling_upper_bound_add=self.sampling_upper_bound_add)
 
+                # Create 8 input pianorolls by randomly masking and adding by default "8" times
                 input_pianorolls = add_remove_notes.sample(
                     target_pianoroll, self.samples_per_data_item)
 
+                
                 for input_pianoroll in input_pianorolls:
+                    # Input Pianoroll reshaping
                     training_input.append(
                         input_pianoroll.reshape(training_data_shape))
+                    # Practical target difference pianoroll 
                     xor_target = np.logical_xor(input_pianoroll,
                                                 target_pianoroll)
                     training_target.append(
                         xor_target.reshape(training_data_shape))
-
+                        
+                # Slice data according to batch size
                 if len(training_input) >= self.batch_size:
                     training_input = np.asarray(
                         training_input[:self.batch_size])
